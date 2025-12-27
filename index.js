@@ -14,7 +14,7 @@ const canvasHeight = canvas.height;
 
 // Car properties
 let carImg = new Image();
-carImg.src = './img/GRCAR.png';
+carImg.src = './assets/GRCAR.png';
 
 let carWidth = 50; 
 let carHeight = 0;  
