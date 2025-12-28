@@ -1,4 +1,4 @@
-// ================= CREATE CANVAS =================
+// ================= SETUP =================
 document.body.style.margin = "0";
 document.body.style.overflow = "hidden";
 document.body.style.background = "#111";
@@ -36,6 +36,7 @@ let speedBoost = false;
 let shieldTimer = 0;
 let speedTimer = 0;
 
+let isGameOver = false;
 const keys = { left: false, right: false };
 
 // ================= INPUT =================
@@ -67,6 +68,7 @@ function resetCar() {
 }
 
 setInterval(() => {
+  if (isGameOver) return;
   obstacles.push({
     x: Math.random() * (canvas.width - 50),
     y: -40,
@@ -77,6 +79,7 @@ setInterval(() => {
 }, 900);
 
 setInterval(() => {
+  if (isGameOver) return;
   powerups.push({
     x: Math.random() * (canvas.width - 30),
     y: -40,
@@ -88,15 +91,19 @@ setInterval(() => {
 
 // ================= GAME LOOP =================
 function update() {
+  if (isGameOver) return;
+
   if (keys.left && car.x > 0) car.x -= car.speed;
   if (keys.right && car.x < canvas.width - car.w) car.x += car.speed;
 
   obstacles.forEach((o, i) => {
     o.y += o.speed;
+
     if (collide(o, car)) {
-      if (!shield) return gameOver();
+      if (!shield) return endGame();
       obstacles.splice(i, 1);
     }
+
     if (o.y > canvas.height) obstacles.splice(i, 1);
   });
 
@@ -127,11 +134,9 @@ function update() {
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Car
   ctx.fillStyle = "#00f6ff";
   ctx.fillRect(car.x, car.y, car.w, car.h);
 
-  // Shield
   if (shield) {
     ctx.strokeStyle = "cyan";
     ctx.lineWidth = 4;
@@ -140,11 +145,9 @@ function draw() {
     ctx.stroke();
   }
 
-  // Obstacles
   ctx.fillStyle = "red";
   obstacles.forEach(o => ctx.fillRect(o.x, o.y, o.w, o.h));
 
-  // Powerups
   powerups.forEach(p => {
     ctx.fillStyle = p.type === "shield" ? "cyan" : "orange";
     ctx.fillRect(p.x, p.y, p.w, p.h);
@@ -165,11 +168,16 @@ function collide(a, b) {
   );
 }
 
-function gameOver() {
+function endGame() {
+  if (isGameOver) return;
+  isGameOver = true;
   highScore = Math.max(highScore, score);
   localStorage.setItem("highScore", highScore);
-  alert("Game Over! Score: " + score);
-  location.reload();
+
+  setTimeout(() => {
+    alert("Game Over!\nScore: " + score);
+    location.reload();
+  }, 100);
 }
 
 function loop() {
