@@ -11,3 +11,22 @@ canvas {
   background: #444;
   border: 2px solid #fff;
 }
+
+#mobile-controls {
+  position: fixed;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 30px;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+#mobile-controls button {
+  font-size: 32px;
+  padding: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+}
